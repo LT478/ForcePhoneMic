@@ -13,7 +13,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # 第一步：先用 JDK 17 满足最新的 Android SDK 工具
+    # 第一步：用 JDK 17 来配置 Android SDK 环境
     - name: Set up JDK 17 (For Android SDK)
       uses: actions/setup-java@v4
       with:
@@ -21,12 +21,14 @@ jobs:
         distribution: 'temurin'
 
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: android-actions/setup-android@v4
+      with:
+        packages: 'platform-tools' # 关键修复：只安装存在的包
 
     - name: Accept Android SDK Licenses
       run: yes | sdkmanager --licenses || true
 
-    # 第二步：切回 JDK 11，满足老旧的 Gradle 5.4.1
+    # 第二步：切换回 JDK 11，满足旧版 Gradle 的编译要求
     - name: Set up JDK 11 (For Gradle)
       uses: actions/setup-java@v4
       with:
